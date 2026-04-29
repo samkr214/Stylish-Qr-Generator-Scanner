@@ -214,25 +214,15 @@ if (scrollBtn) {
   };
 }
 
-async function startCamera() {
+// ================= CAMERA =================
+function startCamera() {
   const video = document.getElementById("video");
 
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { exact: "environment" } }
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      video.srcObject = stream;
+      video.play();
     });
-
-    video.srcObject = stream;
-    video.play();
-
-  } catch (err) {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true
-    });
-
-    video.srcObject = stream;
-    video.play();
-  }
 }
 const scanBtn = document.getElementById("scanBtn");
 const fileInput = document.getElementById("scanImageInput");
