@@ -215,15 +215,46 @@ if (scrollBtn) {
 }
 
 // ================= CAMERA =================
-function startCamera() {
+let currentStream = null;
+let useBackCamera = true;
+
+async function startCamera() {
   const video = document.getElementById("video");
 
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-      video.srcObject = stream;
-      video.play();
+  if (currentStream) {
+    currentStream.getTracks().forEach(track => track.stop());
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: useBackCamera ? { exact: "environment" } : "user"
+      }
     });
+
+    currentStream = stream;
+    video.srcObject = stream;
+    video.play();
+
+  } catch {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true
+    });
+
+    currentStream = stream;
+    video.srcObject = stream;
+    video.play();
+  }
 }
+const switchBtn = document.getElementById("switchCameraBtn");
+
+if (switchBtn) {
+  switchBtn.onclick = () => {
+    useBackCamera = !useBackCamera;
+    startCamera();
+  };
+}
+
 const scanBtn = document.getElementById("scanBtn");
 const fileInput = document.getElementById("scanImageInput");
 const scanResult = document.getElementById("scanResult");
