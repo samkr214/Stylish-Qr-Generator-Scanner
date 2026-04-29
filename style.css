@@ -1,0 +1,259 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #b7c3d3;
+    transition: 0.3s;
+  }
+  
+ .dark {
+    background: #1e1e1e;
+    color: white;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    color: white;
+    background: linear-gradient(to right, #1e3c43, #b33a2f);
+  }
+  
+  .menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .menu button {
+    margin-left: 6px;
+    padding: 8px 10px;
+    border: none;
+    background: #c1443c;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 45px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    min-width: 120px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+  
+  .dropdown a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+  }
+  
+  .dropdown a:hover {
+    background: #eee;
+  }
+  
+  section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 85vh;
+  }
+  
+  .card {
+    background: #eee;
+    padding: 20px;
+    border-radius: 12px;
+    width: 650px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .flex {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+  }
+  
+  .form {
+    flex: 1;
+  }
+
+  .preview {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .hidden {
+    display: none;
+  }
+
+  input, button {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+  
+  button {
+    background: linear-gradient(to right, #b33a2f, #1e3c43);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  button:hover {
+    opacity: 0.9;
+  }
+  
+  #qrcode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 220px;
+  }
+  
+  #downloadBtn {
+    display: none;
+    margin-top: 15px;
+  }
+  
+  footer {
+    text-align: center;
+    padding: 10px;
+  }
+  
+  .dark .card {
+    background: #2c2c2c;
+  }
+  
+  .dark input {
+    background: #444;
+    color: white;
+  }
+  #downloadOptions {
+    margin-top: 10px;
+  }
+  
+  #scanResult {
+    margin-top: 10px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+  }
+  
+  .dark #scanResult {
+    background: #444;
+  }
+  
+  #qrcode {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  #historyList {
+    max-height: 300px;   
+    overflow-y: auto;    
+    padding-right: 5px;
+  }
+  
+  #historyList::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  #historyList::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+  
+  #historyList::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+body {
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+.card {
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+.dark header {
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
+button {
+  transition: all 0.3s ease;
+}
+body.dark {
+  animation: fadeDark 0.3s ease;
+}
+
+@keyframes fadeDark {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+#qrcode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 220px;
+}
+
+#qrcode canvas {
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+}
+body {
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+header {
+  transition: all 0.4s ease;
+}
+
+#toggleTheme {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+#toggleTheme:hover {
+  transform: rotate(20deg) scale(1.2);
+}
+
+footer a {
+  color: white;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+.dark footer {
+  background: #111;
+}
+.git-icon {
+  width: 20px;   
+  height: 20px;
+  vertical-align: middle;
+}
+.card p {
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.card a {
+  color: #1e88e5;
+  font-weight: bold;
+}
