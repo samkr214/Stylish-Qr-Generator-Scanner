@@ -261,3 +261,72 @@ footer a:hover {
 #switchCameraBtn {
   margin-top: 10px;
 }
+
+.scanner-container {
+  position: relative;
+  width: 260px;
+  margin: auto;
+}
+
+#video {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+#scanBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 160px;
+  height: 160px;
+  transform: translate(-50%, -50%);
+  border: 3px dashed white;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.5);
+  transition: 0.3s ease;
+}
+
+#scanBox::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: red;
+  top: 0;
+  animation: scanLine 2s linear infinite;
+}
+
+@keyframes scanLine {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+#scanBox.active {
+  border-color: lime;
+  box-shadow: 0 0 15px lime;
+}
+
+#scanResult {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: center;
+  word-break: break-word;
+}
+
+#copyBtn {
+  display: none;
+  margin-top: 10px;
+}
+
+#switchCameraBtn {
+  margin-top: 10px;
+}
+
+.dark #scanBox {
+  border-color: #aaa;
+}
+
+.dark #scanBox.active {
+  border-color: lime;
+}
