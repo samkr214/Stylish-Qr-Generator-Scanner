@@ -10,7 +10,6 @@ if (menuBtn) {
 
 const toggleTheme = document.getElementById("toggleTheme");
 
-// apply saved theme
 if (localStorage.getItem("theme") === "dark") {
   document.body.classList.add("dark");
   if (toggleTheme) toggleTheme.textContent = "☀️";
@@ -38,7 +37,6 @@ function isLowContrast(color1, color2) {
     const b = parseInt(hex.substr(4, 2), 16);
     return 0.299 * r + 0.587 * g + 0.114 * b;
   }
-
   return Math.abs(getLuminance(color1) - getLuminance(color2)) < 100;
 }
 
@@ -214,12 +212,14 @@ if (scrollBtn) {
   };
 }
 
-// ================= CAMERA =================
 let currentStream = null;
 let useBackCamera = true;
 
 async function startCamera() {
   const video = document.getElementById("video");
+
+  const scanBox = document.getElementById("scanBox");
+  if (scanBox) scanBox.classList.remove("active");
 
   if (currentStream) {
     currentStream.getTracks().forEach(track => track.stop());
@@ -234,28 +234,22 @@ async function startCamera() {
 
     currentStream = stream;
     video.srcObject = stream;
-    video.play();
-    video.play();
-    setTimeout(() =>{
-      startAutoScan();
-    }, 500);
+    await video.play();
+
+    setTimeout(() => startAutoScan(), 500);
 
   } catch {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true
-    });
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
     currentStream = stream;
     video.srcObject = stream;
-    video.play();
-    video.play();
-    setTimeout(() =>{
-      startAutoScan();
-    }, 500);
+    await video.play();
+
+    setTimeout(() => startAutoScan(), 500);
   }
 }
-const switchBtn = document.getElementById("switchCameraBtn");
 
+const switchBtn = document.getElementById("switchCameraBtn");
 if (switchBtn) {
   switchBtn.onclick = () => {
     useBackCamera = !useBackCamera;
@@ -273,104 +267,38 @@ if (scanBtn && fileInput) {
     const file = fileInput.files[0];
     if (!file) return alert("Upload file");
 
-    if (file.type === "application/pdf") {
-      const reader = new FileReader();
+    const reader = new FileReader();
 
-      reader.onload = function (e) {
-        const typedarray = new Uint8Array(e.target.result);
+    reader.onload = e => {
+      const img = new Image();
 
-        pdfjsLib.getDocument(typedarray).promise.then(pdf => {
-          pdf.getPage(1).then(page => {
-            const viewport = page.getViewport({ scale: 2 });
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
 
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
+        canvas.width = img.width;
+        canvas.height = img.height;
 
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
+        ctx.drawImage(img, 0, 0);
 
-            page.render({
-              canvasContext: ctx,
-              viewport: viewport
-            }).promise.then(() => {
-              const imageData = ctx.getImageData(
-                0,
-                0,
-                canvas.width,
-                canvas.height
-              );
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imgData.data, canvas.width, canvas.height);
 
-              const code = jsQR(
-                imageData.data,
-                canvas.width,
-                canvas.height
-              );
-
-              if (code) {
-                scanResult.textContent = code.data;
-                copyBtn.style.display = "block";
-
-                copyBtn.onclick = () => {
-                  navigator.clipboard.writeText(code.data);
-                  alert("Copied!");
-                };
-              } else {
-                scanResult.textContent = "No QR found in PDF";
-              }
-            });
-          });
-        });
+        if (code) {
+          scanResult.textContent = code.data;
+          copyBtn.style.display = "block";
+        } else {
+          scanResult.textContent = "No QR found";
+        }
       };
 
-      reader.readAsArrayBuffer(file);
-    } else {
-      const reader = new FileReader();
+      img.src = e.target.result;
+    };
 
-      reader.onload = e => {
-        const img = new Image();
-
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-
-          canvas.width = img.width;
-          canvas.height = img.height;
-
-          ctx.drawImage(img, 0, 0);
-
-          const imgData = ctx.getImageData(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-          );
-
-          const code = jsQR(
-            imgData.data,
-            canvas.width,
-            canvas.height
-          );
-
-          if (code) {
-            scanResult.textContent = code.data;
-            copyBtn.style.display = "block";
-
-            copyBtn.onclick = () => {
-              navigator.clipboard.writeText(code.data);
-              alert("Copied!");
-            };
-          } else {
-            scanResult.textContent = "No QR found";
-          }
-        };
-
-        img.src = e.target.result;
-      };
-
-      reader.readAsDataURL(file);
-    }
+    reader.readAsDataURL(file);
   };
 }
+
 let scanning = false;
 
 function startAutoScan() {
@@ -378,24 +306,32 @@ function startAutoScan() {
   const canvas = document.getElementById("scanCanvas");
   const ctx = canvas.getContext("2d");
 
+  const scanResult = document.getElementById("scanResult");
+  const copyBtn = document.getElementById("copyBtn");
+  const scanBox = document.getElementById("scanBox");
+
+  if (!canvas || !video) return;
+
   scanning = true;
 
   function scanFrame() {
     if (!scanning) return;
 
-    if (video.readyState === 4) {
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
 
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const scanSize = canvas.width * 0.5;
+      const x = (canvas.width - scanSize) / 2;
+      const y = (canvas.height - scanSize) / 2;
 
-      const code = jsQR(imageData.data, canvas.width, canvas.height);
+      const imageData = ctx.getImageData(x, y, scanSize, scanSize);
+      const code = jsQR(imageData.data, scanSize, scanSize);
 
       if (code && code.data) {
-        const scanResult = document.getElementById("scanResult");
-        const copyBtn = document.getElementById("copyBtn");
+        if (scanBox) scanBox.classList.add("active");
 
         scanResult.textContent = code.data;
         copyBtn.style.display = "block";
