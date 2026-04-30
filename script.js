@@ -235,6 +235,10 @@ async function startCamera() {
     currentStream = stream;
     video.srcObject = stream;
     video.play();
+    video.play();
+    setTimeout(() =>{
+      startAutoScan();
+    }, 500);
 
   } catch {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -244,6 +248,10 @@ async function startCamera() {
     currentStream = stream;
     video.srcObject = stream;
     video.play();
+    video.play();
+    setTimeout(() =>{
+      startAutoScan();
+    }, 500);
   }
 }
 const switchBtn = document.getElementById("switchCameraBtn");
@@ -362,4 +370,45 @@ if (scanBtn && fileInput) {
       reader.readAsDataURL(file);
     }
   };
+}
+let scanning = false;
+
+function startAutoScan() {
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("scanCanvas");
+  const ctx = canvas.getContext("2d");
+
+  scanning = true;
+
+  function scanFrame() {
+    if (!scanning) return;
+
+    if (video.readyState === 4) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+      if (code && code.data) {
+        const scanResult = document.getElementById("scanResult");
+        const copyBtn = document.getElementById("copyBtn");
+
+        scanResult.textContent = code.data;
+        copyBtn.style.display = "block";
+
+        navigator.clipboard.writeText(code.data);
+
+        scanning = false;
+        return;
+      }
+    }
+
+    requestAnimationFrame(scanFrame);
+  }
+
+  setTimeout(scanFrame, 500);
 }
