@@ -6,8 +6,17 @@
 <title>Scan QR</title>
 
 <link rel="stylesheet" href="style.css">
+
 <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+</script>
+
 </head>
 
 <body>
@@ -33,13 +42,19 @@
     <button id="switchCameraBtn">🔄 Switch Camera</button>
 
     <input type="file" id="scanImageInput">
+
+    <div class="scanner-container">
+      <video id="video"></video>
+      <div id="scanBox"></div>
+    </div>
+
     <canvas id="scanCanvas" style="display:none;"></canvas>
-    <video id="video" width="250"></video>
 
     <button id="scanBtn">Scan Now</button>
+    
+    <div id="scanResult"></div>
     <button id="copyBtn" style="display:none;">Copy Result</button>
 
-    <div id="scanResult"></div>
   </div>
 </section>
 
@@ -50,8 +65,9 @@
          alt="GitHub Logo" 
          class="git-icon">
   </a>
-  </footer>
+</footer>
 
 <script src="script.js"></script>
+
 </body>
 </html>
