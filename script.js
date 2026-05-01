@@ -236,7 +236,10 @@ async function startCamera() {
     video.srcObject = stream;
     await video.play();
 
-    setTimeout(() => startAutoScan(), 500);
+    setTimeout(() => {
+      console.log("Starting auto scan...");
+      startAutoScan();
+    }, 800);
 
   } catch {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -245,7 +248,10 @@ async function startCamera() {
     video.srcObject = stream;
     await video.play();
 
-    setTimeout(() => startAutoScan(), 500);
+    setTimeout(() => {
+      console.log("Starting auto scan...");
+      startAutoScan();
+    }, 800);
   }
 }
 
@@ -310,12 +316,19 @@ function startAutoScan() {
   const copyBtn = document.getElementById("copyBtn");
   const scanBox = document.getElementById("scanBox");
 
-  if (!canvas || !video) return;
+  console.log("Auto scan function triggered");
+
+  if (!video || !canvas) {
+    console.log("Video or canvas missing");
+    return;
+  }
 
   scanning = true;
 
   function scanFrame() {
     if (!scanning) return;
+
+    console.log("Scanning frame...");
 
     if (video.readyState === video.HAVE_ENOUGH_DATA) {
       canvas.width = video.videoWidth;
@@ -323,14 +336,14 @@ function startAutoScan() {
 
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      const scanSize = canvas.width * 0.5;
+      const scanSize = Math.min(canvas.width, canvas.height) * 0.5;
       const x = (canvas.width - scanSize) / 2;
       const y = (canvas.height - scanSize) / 2;
 
       const imageData = ctx.getImageData(x, y, scanSize, scanSize);
       const code = jsQR(imageData.data, scanSize, scanSize);
 
-      if (code && code.data) {
+      if (code && code.data && code.data.length > 0) {
         if (scanBox) scanBox.classList.add("active");
 
         scanResult.textContent = code.data;
@@ -347,4 +360,4 @@ function startAutoScan() {
   }
 
   setTimeout(scanFrame, 500);
-}
+        }
