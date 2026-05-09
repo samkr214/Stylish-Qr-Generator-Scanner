@@ -38,15 +38,15 @@
   <div class="card">
     <h2>Scan QR </h2>
 
+        <div class="scanner-container">
+          <video id="video"></video>
+          <div id="scanBox"></div>
+        </div>
+    
     <button onclick="startCamera()">Start Camera</button>
     <button id="switchCameraBtn">🔄 Switch Camera</button>
 
     <input type="file" id="scanImageInput">
-
-    <div class="scanner-container">
-      <video id="video"></video>
-      <div id="scanBox"></div>
-    </div>
 
     <canvas id="scanCanvas" style="display:none;"></canvas>
 
